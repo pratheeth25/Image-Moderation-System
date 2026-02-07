@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+torch
+ultralytics
+tensorflow
+psycopg2-binary
+python-multipart
+python-jose
+passlib
+sqlalchemy
+pillow

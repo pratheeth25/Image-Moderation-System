@@ -1,0 +1,39 @@
+<h2>Image Moderation Panel</h2>
+
+<input id="token" placeholder="JWT Token"/>
+
+<button onclick="load()">Load</button>
+
+<table border="1" id="tbl"></table>
+
+<script>
+
+function load(){
+
+ let token = document.getElementById("token").value;
+
+ fetch("http://localhost:8000/admin/images",{
+   headers:{
+     "Authorization":"Bearer "+token
+   }
+ })
+ .then(r=>r.json())
+ .then(data=>{
+
+  let html="<tr><th>File</th><th>NSFW</th><th>Violence</th><th>Status</th></tr>";
+
+  data.forEach(d=>{
+    html+=`
+     <tr>
+      <td>${d.filename}</td>
+      <td>${d.nsfw_score}</td>
+      <td>${d.violence_score}</td>
+      <td>${d.status}</td>
+     </tr>
+    `;
+  });
+
+  document.getElementById("tbl").innerHTML=html;
+ });
+}
+</script>

@@ -1,0 +1,23 @@
+image-moderation-system/
+│
+├── backend/
+│   ├── main.py
+│   ├── model.py
+│   ├── classifier.py
+│   ├── database.py
+│   ├── schemas.py
+│   └── auth.py
+│
+├── models/
+│   ├── nsfw_model.h5
+│   └── yolo.pt
+│
+├── uploads/temp/
+│
+├── frontend/
+│   └── admin.html
+│
+├── docker-compose.yml
+├── requirements.txt
+└── README.md
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4ifQ.nkSHEJ1P9e7f2WvAn_QDYevawH_FsAKjrSoBF8FMdIg
