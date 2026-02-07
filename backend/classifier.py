@@ -2,7 +2,6 @@ from ultralytics import YOLO
 
 
 def predict_nsfw(img_path, model):
-    # Temporary: no NSFW model
     return 0.0
 
 

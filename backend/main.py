@@ -1,32 +1,62 @@
 import os
 import shutil
-from fastapi.middleware.cors import CORSMiddleware
 
 from fastapi import FastAPI, UploadFile, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
 from backend.model import load_models
-from backend.classifier import *
-from backend.database import *
-from backend.schemas import *
-from backend.auth import *
+from backend.classifier import predict_nsfw, predict_violence
+from backend.database import SessionLocal, ImageLog
+from backend.schemas import ImageResponse
+from backend.auth import create_token, verify
 
-app = FastAPI()
+
+# ---------------- APP ----------------
+
+app = FastAPI(title="Image Moderation API")
+
+
+# ---------------- CORS ----------------
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # allow all (for dev)
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
-UPLOAD_DIR = "uploads/temp"
+# ---------------- BASE DIR ----------------
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+# ---------------- STATIC FILES ----------------
+
+FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
+
+app.mount(
+    "/frontend",
+    StaticFiles(directory=FRONTEND_DIR),
+    name="frontend"
+)
+
+
+# ---------------- UPLOAD DIR ----------------
+
+UPLOAD_DIR = os.path.join(BASE_DIR, "uploads", "temp")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+
+# ---------------- MODELS ----------------
 
 yolo, nsfw_model = load_models()
 
+
+# ---------------- DATABASE ----------------
 
 def get_db():
     db = SessionLocal()
@@ -34,6 +64,13 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+# ---------------- HOME ----------------
+
+@app.get("/")
+def home():
+    return {"status": "Image Moderation API Running"}
 
 
 # ---------------- LOGIN ----------------
@@ -58,9 +95,9 @@ async def upload(
     db: Session = Depends(get_db)
 ):
 
-    path = f"{UPLOAD_DIR}/{file.filename}"
+    path = os.path.join(UPLOAD_DIR, file.filename)
 
-    with open(path,"wb") as f:
+    with open(path, "wb") as f:
         shutil.copyfileobj(file.file, f)
 
     nsfw = predict_nsfw(path, nsfw_model)
@@ -80,6 +117,10 @@ async def upload(
 
     db.add(record)
     db.commit()
+
+    # Auto delete temp file (recommended)
+    if os.path.exists(path):
+        os.remove(path)
 
     return {
         "filename": file.filename,

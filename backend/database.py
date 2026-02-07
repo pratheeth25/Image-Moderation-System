@@ -4,16 +4,13 @@ from sqlalchemy.orm import sessionmaker
 import os
 
 
-# Get DB URL from environment (Render / Cloud)
+
 DB_URL = os.getenv("DATABASE_URL")
 
 
-# Safety check
 if not DB_URL:
     raise ValueError("DATABASE_URL is not set in environment variables")
 
-
-# Fix for Render: sometimes needs this
 if DB_URL.startswith("postgres://"):
     DB_URL = DB_URL.replace("postgres://", "postgresql://", 1)
 
@@ -42,6 +39,4 @@ class ImageLog(Base):
     violence_score = Column(Float)
     status = Column(String)
 
-
-# Create tables
 Base.metadata.create_all(bind=engine)
