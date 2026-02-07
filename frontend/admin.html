@@ -12,7 +12,7 @@ function load(){
 
  let token = document.getElementById("token").value;
 
- fetch("http://localhost:8000/admin/images",{
+ fetch("/admin/images",{
    headers:{
      "Authorization":"Bearer "+token
    }
