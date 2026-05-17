@@ -50,14 +50,6 @@ image-moderation-system/
 
 🚀 Live Deployment
 
-Backend API and Docs:
-
-https://image-moderation-system.onrender.com/docs
-
-
-Admin Panel:
-
-https://image-moderation-system.onrender.com/frontend/admin.html
 
 🧪 Local Setup
 1. Clone Repository
