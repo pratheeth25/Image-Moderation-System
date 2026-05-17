@@ -1,7 +1,6 @@
 📌 Image Moderation System
 
-Live Demo:
-https://image-moderation-system.onrender.com/
+
 
 📖 Overview
 
